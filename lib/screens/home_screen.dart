@@ -20,7 +20,10 @@ class _HomeScreenState extends State<HomeScreen> {
       "https://api.coingecko.com/api/v3/coins/markets?vs_currency=cad&order=market_cap_desc&per_page=100&page=1&sparkline=false";
   String name = "", email = "";
   bool isDarkMode = AppTheme.isDarkModeEnabled;
+  bool isFirstTimeDataAccess = true;
   GlobalKey<ScaffoldState> _globalkey = GlobalKey<ScaffoldState>();
+  List<CoinDetailsModel> coinDetailsList = [];
+  late Future<List<CoinDetailsModel>> coinDetailsFuture;
 
   @override
   void initState() {
@@ -28,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     getUserProfile();
     getCoinsDetails();
+    coinDetailsFuture = getCoinsDetails();
   }
 
   void getUserProfile() async {
@@ -147,46 +151,65 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: SizedBox(
-        width: double.infinity,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 15,
-                horizontal: 40,
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(40),
+      body: FutureBuilder(
+        future: coinDetailsFuture,
+        builder: (context, AsyncSnapshot<List<CoinDetailsModel>> snapshot) {
+          if (snapshot.hasData) {
+            if (isFirstTimeDataAccess) {
+              coinDetailsList = snapshot.data!;
+              isFirstTimeDataAccess = false;
+            }
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 40,
                   ),
-                  hintText: "Search for a coin",
-                ),
-              ),
-            ),
-            Expanded(
-                child: FutureBuilder(
-              future: getCoinsDetails(),
-              builder:
-                  (context, AsyncSnapshot<List<CoinDetailsModel>> snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      return coinDetails(snapshot.data![index]);
+                  child: TextField(
+                    onChanged: (query) {
+                      List<CoinDetailsModel> searchResults =
+                          snapshot.data!.where((element) {
+                        String coinName = element.name.toLowerCase();
+                        bool isItemFound =
+                            coinName.contains(query.toLowerCase());
+
+                        return isItemFound;
+                      }).toList();
+
+                      setState(() {
+                        coinDetailsList = searchResults;
+                      });
                     },
-                  );
-                } else {
-                  return const Center(
-                    child: Text("Error Occurred"),
-                  );
-                }
-              },
-            ))
-          ],
-        ),
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      hintText: "Search for a coin",
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: coinDetailsList.isEmpty
+                      ? const Center(
+                          child: Text("No coin found"),
+                        )
+                      : ListView.builder(
+                          itemCount: coinDetailsList.length,
+                          itemBuilder: (context, index) {
+                            return coinDetails(coinDetailsList[index]);
+                          },
+                        ),
+                ),
+              ],
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
     );
   }
