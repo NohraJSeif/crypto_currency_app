@@ -38,6 +38,9 @@ dependencies:
   # url api
   http: ^0.13.5
 
+  # Flutter chart library that supports Line Chart, Bar Chart, Pie Chart,
+  # Scatter Chart, and Radar Chart
+  fl_chart: ^0.55.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

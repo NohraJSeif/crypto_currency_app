@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/app_theme.dart';
 import '../models/coin_details.dart';
+import 'coin_graph_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -218,6 +219,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: ((context) => CoinGraphScreen(
+                    coinDetailsModel: model,
+                  )),
+            ),
+          );
+        },
         leading: SizedBox(
           height: 50,
           width: 50,
