@@ -91,171 +91,179 @@ class _CoinGraphScreenState extends State<CoinGraphScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            ),
           ),
-        ),
-        title: Text(
-          widget.coinDetailsModel.name,
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 20,
+          title: Text(
+            widget.coinDetailsModel.name,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 20,
+            ),
           ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
         ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: isLoading == false
-          ? SizedBox(
-              width: double.infinity,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 20,
-                    ),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: RichText(
-                        text: TextSpan(
-                          text: "${widget.coinDetailsModel.name} Price\n",
+        body: SizedBox(
+          width: double.infinity,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 20,
+                ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: RichText(
+                    text: TextSpan(
+                      text: "${widget.coinDetailsModel.name} Price\n",
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "CAD ${widget.coinDetailsModel.currentPrice}\n",
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 18,
+                            fontWeight: FontWeight.w500,
                           ),
-                          children: [
-                            TextSpan(
-                              text:
-                                  "CAD ${widget.coinDetailsModel.currentPrice}\n",
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            TextSpan(
-                              text:
-                                  "${widget.coinDetailsModel.priceChangePercentage24h}%",
-                              style: TextStyle(
-                                color: widget.coinDetailsModel
-                                            .priceChangePercentage24h >
-                                        0
-                                    ? Colors.green
-                                    : Colors.red,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
                         ),
-                      ),
+                        TextSpan(
+                          text:
+                              "${widget.coinDetailsModel.priceChangePercentage24h}%",
+                          style: TextStyle(
+                            color: widget.coinDetailsModel
+                                        .priceChangePercentage24h >
+                                    0
+                                ? Colors.green
+                                : Colors.red,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 100),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.35,
-                      child: LineChart(
-                        LineChartData(
-                          minX: minX,
-                          minY: minY,
-                          maxX: maxX,
-                          maxY: maxY,
-                          titlesData: FlTitlesData(
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: false,
-                              ),
-                            ),
-                            topTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: false,
-                              ),
-                            ),
-                            rightTitles: AxisTitles(
-                              sideTitles: (SideTitles(
-                                showTitles: false,
-                              )),
-                            ),
-                            leftTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                reservedSize: 40,
-                                getTitlesWidget:
-                                    (double value, TitleMeta meta) {
-                                  return SideTitleWidget(
-                                    axisSide: meta.axisSide,
-                                    child: Text(
-                                      "${meta.formattedValue}",
-                                      style: const TextStyle(
-                                        fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 100),
+              isLoading == false
+                  ? Expanded(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.35,
+                              child: LineChart(
+                                LineChartData(
+                                  minX: minX,
+                                  minY: minY,
+                                  maxX: maxX,
+                                  maxY: maxY,
+                                  titlesData: FlTitlesData(
+                                    bottomTitles: AxisTitles(
+                                      sideTitles: SideTitles(
+                                        showTitles: false,
                                       ),
                                     ),
-                                  );
-                                },
+                                    topTitles: AxisTitles(
+                                      sideTitles: SideTitles(
+                                        showTitles: false,
+                                      ),
+                                    ),
+                                    rightTitles: AxisTitles(
+                                      sideTitles: (SideTitles(
+                                        showTitles: false,
+                                      )),
+                                    ),
+                                    leftTitles: AxisTitles(
+                                      sideTitles: SideTitles(
+                                        showTitles: true,
+                                        reservedSize: 40,
+                                        getTitlesWidget:
+                                            (double value, TitleMeta meta) {
+                                          return SideTitleWidget(
+                                            axisSide: meta.axisSide,
+                                            child: Text(
+                                              "${meta.formattedValue}",
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    show: true,
+                                  ),
+                                  gridData: FlGridData(
+                                      getDrawingVerticalLine: (value) {
+                                    return FlLine(
+                                      strokeWidth: 0,
+                                    );
+                                  }, getDrawingHorizontalLine: (value) {
+                                    return FlLine(
+                                      strokeWidth: 0,
+                                    );
+                                  }),
+                                  lineBarsData: [
+                                    LineChartBarData(
+                                      spots: flSpotList,
+                                      dotData: FlDotData(show: false),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            show: true,
                           ),
-                          gridData: FlGridData(getDrawingVerticalLine: (value) {
-                            return FlLine(
-                              strokeWidth: 0,
-                            );
-                          }, getDrawingHorizontalLine: (value) {
-                            return FlLine(
-                              strokeWidth: 0,
-                            );
-                          }),
-                          lineBarsData: [
-                            LineChartBarData(
-                              spots: flSpotList,
-                              dotData: FlDotData(show: false),
-                            ),
-                          ],
-                        ),
+                          Expanded(
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // todo change color of clicked button
+                                      getChartData("1");
+                                    },
+                                    child: const Text("1d"),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      getChartData("15");
+                                    },
+                                    child: const Text("15d"),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      getChartData("30");
+                                    },
+                                    child: const Text("30d"),
+                                  ),
+                                ]),
+                          )
+                        ],
                       ),
+                    )
+                  : const Center(
+                      child: CircularProgressIndicator(),
                     ),
-                  ),
-                  Expanded(
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              getChartData("1");
-                            },
-                            child: const Text("1d"),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              getChartData("15");
-                            },
-                            child: const Text("15d"),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              getChartData("30");
-                            },
-                            child: const Text("30d"),
-                          ),
-                        ]),
-                  )
-                ],
-              ),
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
-    );
+            ],
+          ),
+        ));
   }
 }
 
